@@ -1,0 +1,67 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 2019/04/13 22:03:47
+// Design Name: 
+// Module Name: UpCounter_2d
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module UpCounter_2d(
+  output [3:0] digit1,  
+  output [3:0] digit0,  
+  output carry_out,
+  input carry_in,
+  input clk,  
+  input rst_n, 
+  input en, 
+  input pb_rst_debounced,
+  input mode_enable,
+  input [3:0]limit1,
+  input [3:0]limit0,
+  input [3:0] initial1,
+  input [3:0] initial0
+);
+
+wire carry0,carry1; 
+wire increase_enable;
+
+assign increase_enable = mode_enable & carry_in;  
+    
+Bcd_Up_Counter Udc0(
+  .clk(clk),
+  .value(digit0),   
+  .carry(carry0),  
+  .rst_n(rst_n),  
+  .increase(increase_enable), 
+  .init_value(initial0),  
+  .pb_rst_debounced(pb_rst_debounced),
+  .limit(limit0)
+);
+
+
+Bcd_Up_Counter Udc1(
+  .clk(clk),
+  .value(digit1),   
+  .carry(carry_out),  
+  .rst_n(rst_n),  
+  .increase(carry0), 
+  .init_value(initial1),  
+  .pb_rst_debounced(pb_rst_debounced),
+  .limit(limit1)
+);
+
+endmodule
